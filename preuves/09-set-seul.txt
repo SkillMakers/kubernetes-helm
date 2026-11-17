@@ -11,18 +11,27 @@ message: Bienvenue
 
 $ kubectl get deployment,hpa -n prod -l app.kubernetes.io/name=orders
 NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/orders   3/3     3            3           7m5s
+deployment.apps/orders   3/3     3            3           50s
 
-NAME                                         REFERENCE           TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
-horizontalpodautoscaler.autoscaling/orders   Deployment/orders   cpu: 4%/60%   3         6         3          7m5s
+NAME                                         REFERENCE           TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/orders   Deployment/orders   cpu: 33%/60%   3         6         3          50s
 
 $ curl -s http://orders.prod/info
-{"message":"Bienvenue","pod":"orders-6bbddcdf8c-vmfmf","version":"3.10"}
+{"message":"Bienvenue","pod":"orders-6bbddcdf8c-w6xkd","version":"3.10"}
 
 # On change seulement le message, sans redonner values-prod.yaml :
 $ helm upgrade orders chart/orders -n prod --set message=Promo --wait
-level=WARN msg="upgrade failed" name=orders error="conflict occurred while applying object prod/orders apps/v1, Kind=Deployment: Apply failed with 1 conflict: conflict with \"handover-to-hpa\": .spec.replicas"
-Error: UPGRADE FAILED: conflict occurred while applying object prod/orders apps/v1, Kind=Deployment: Apply failed with 1 conflict: conflict with "handover-to-hpa": .spec.replicas
+Release "orders" has been upgraded. Happy Helming!
+NAME: orders
+LAST DEPLOYED: Tue Nov 17 18:25:58 2026
+NAMESPACE: prod
+STATUS: deployed
+REVISION: 2
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+NOTES:
+orders installée dans l'espace de noms prod, image orders:3.9.
+Tester depuis le cluster : curl http://orders.prod/info
 
 $ helm get values orders -n prod
 USER-SUPPLIED VALUES:
@@ -30,11 +39,8 @@ message: Promo
 
 $ kubectl get deployment,hpa -n prod -l app.kubernetes.io/name=orders
 NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/orders   3/3     3            3           7m13s
-
-NAME                                         REFERENCE           TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
-horizontalpodautoscaler.autoscaling/orders   Deployment/orders   cpu: 4%/60%   3         6         3          7m13s
+deployment.apps/orders   1/1     1            1           70s
 
 $ curl -s http://orders.prod/info
-{"message":"Bienvenue","pod":"orders-6bbddcdf8c-vmfmf","version":"3.10"}
+{"message":"Promo","version":"3.9","pod":"orders-65758677bb-b672z"}
 

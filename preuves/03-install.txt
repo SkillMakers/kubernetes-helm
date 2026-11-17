@@ -1,6 +1,6 @@
 $ helm install orders chart/orders-naif -n dev
 NAME: orders
-LAST DEPLOYED: Tue Nov 17 16:14:13 2026
+LAST DEPLOYED: Tue Nov 17 18:18:33 2026
 NAMESPACE: dev
 STATUS: deployed
 REVISION: 1
@@ -12,7 +12,7 @@ Tester depuis le cluster : curl http://orders.dev/info
 
 $ helm install orders chart/orders-naif -n prod -f values-prod.yaml --wait
 NAME: orders
-LAST DEPLOYED: Tue Nov 17 16:14:15 2026
+LAST DEPLOYED: Tue Nov 17 18:18:34 2026
 NAMESPACE: prod
 STATUS: deployed
 REVISION: 1
@@ -22,26 +22,26 @@ NOTES:
 orders installée dans l'espace de noms prod, image orders:3.9.
 Tester depuis le cluster : curl http://orders.prod/info
 
-# install prod avec --wait : 31.2 s au total
+# install prod avec --wait : 27.6 s au total
 
 $ helm list -A
 NAME  	NAMESPACE	REVISION	UPDATED                              	STATUS  	CHART       	APP VERSION
-orders	dev      	1       	2026-11-17 16:14:13.7542479 +0100 CET	deployed	orders-1.0.0	3.9        
-orders	prod     	1       	2026-11-17 16:14:15.0710779 +0100 CET	deployed	orders-1.0.0	3.9        
+orders	prod     	1       	2026-11-17 18:18:34.6245997 +0100 CET	deployed	orders-1.0.0	3.9        
+orders	dev      	1       	2026-11-17 18:18:33.4922484 +0100 CET	deployed	orders-1.0.0	3.9        
 
 $ kubectl get pods -n dev -l app.kubernetes.io/name=orders
 NOM                        IMAGE        PRÊT  REDÉMARRAGES ATTENTE
-orders-6dd59ddfdf-stsfp    orders:3.9   true   0             
+orders-6dd59ddfdf-6kvl5    orders:3.9   true   0             
 
 $ kubectl get pods -n prod -l app.kubernetes.io/name=orders
 NOM                        IMAGE        PRÊT  REDÉMARRAGES ATTENTE
-orders-6dd59ddfdf-6mzhk    orders:3.9   true   0             
-orders-6dd59ddfdf-7nrcq    orders:3.9   true   0             
-orders-6dd59ddfdf-r2skt    orders:3.9   true   0             
+orders-6dd59ddfdf-gmmkb    orders:3.9   true   0             
+orders-6dd59ddfdf-ttrqv    orders:3.9   true   0             
+orders-6dd59ddfdf-ztmb9    orders:3.9   true   0             
 
 $ curl -s http://orders.dev/info
-{"message":"Bonjour","version":"3.9","pod":"orders-6dd59ddfdf-stsfp"}
+{"pod":"orders-6dd59ddfdf-6kvl5","message":"Bonjour","version":"3.9"}
 
 $ curl -s http://orders.prod/info
-{"pod":"orders-6dd59ddfdf-7nrcq","message":"Bienvenue","version":"3.9"}
+{"version":"3.9","message":"Bienvenue","pod":"orders-6dd59ddfdf-ztmb9"}
 

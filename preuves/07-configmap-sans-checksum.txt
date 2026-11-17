@@ -1,11 +1,11 @@
 $ kubectl get pods -n dev -l app.kubernetes.io/name=orders
 NOM                        IMAGE        PRÊT  REDÉMARRAGES ATTENTE
-orders-6dd59ddfdf-stsfp    orders:3.9   true   0             
+orders-6dd59ddfdf-6kvl5    orders:3.9   true   0             
 
 $ helm upgrade orders chart/orders-naif -n dev --set message=Salut --wait
 Release "orders" has been upgraded. Happy Helming!
 NAME: orders
-LAST DEPLOYED: Tue Nov 17 16:19:11 2026
+LAST DEPLOYED: Tue Nov 17 18:23:32 2026
 NAMESPACE: dev
 STATUS: deployed
 REVISION: 2
@@ -21,8 +21,8 @@ Salut
 # 60 secondes plus tard :
 $ kubectl get pods -n dev -l app.kubernetes.io/name=orders
 NOM                        IMAGE        PRÊT  REDÉMARRAGES ATTENTE
-orders-6dd59ddfdf-stsfp    orders:3.9   true   0             
+orders-6dd59ddfdf-6kvl5    orders:3.9   true   0             
 
 $ curl -s http://orders.dev/info
-{"message":"Bonjour","version":"3.9","pod":"orders-6dd59ddfdf-stsfp"}
+{"pod":"orders-6dd59ddfdf-6kvl5","message":"Bonjour","version":"3.9"}
 

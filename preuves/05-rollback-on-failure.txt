@@ -3,9 +3,9 @@ Rollback was a success! Happy Helming!
 
 $ kubectl get pods -n prod -l app.kubernetes.io/name=orders
 NOM                        IMAGE        PRÊT  REDÉMARRAGES ATTENTE
-orders-6dd59ddfdf-6mzhk    orders:3.9   true   0             
-orders-6dd59ddfdf-7nrcq    orders:3.9   true   0             
-orders-6dd59ddfdf-r2skt    orders:3.9   true   0             
+orders-6dd59ddfdf-gmmkb    orders:3.9   true   0             
+orders-6dd59ddfdf-ttrqv    orders:3.9   true   0             
+orders-6dd59ddfdf-ztmb9    orders:3.9   true   0             
 
 # La même erreur, cette fois avec --rollback-on-failure (attente comprise) et 2 minutes au plus :
 $ helm upgrade orders chart/orders-naif -n prod -f values-prod.yaml --rollback-on-failure --timeout 2m
@@ -13,19 +13,19 @@ level=WARN msg="upgrade failed" name=orders error="resource Deployment/prod/orde
 Error: UPGRADE FAILED: release orders failed, and has been rolled back due to rollback-on-failure being set: resource Deployment/prod/orders not ready. status: InProgress, message: Updated: 1/3
 context deadline exceeded
 
-# Échec signalé et retour arrière fait en 122.0 s
+# Échec signalé et retour arrière fait en 122.2 s
 
 $ kubectl get pods -n prod -l app.kubernetes.io/name=orders
 NOM                        IMAGE        PRÊT  REDÉMARRAGES ATTENTE
-orders-6dd59ddfdf-6mzhk    orders:3.9   true   0             
-orders-6dd59ddfdf-7nrcq    orders:3.9   true   0             
-orders-6dd59ddfdf-r2skt    orders:3.9   true   0             
+orders-6dd59ddfdf-gmmkb    orders:3.9   true   0             
+orders-6dd59ddfdf-ttrqv    orders:3.9   true   0             
+orders-6dd59ddfdf-ztmb9    orders:3.9   true   0             
 
 $ helm history orders -n prod
 REVISION	UPDATED                 	STATUS    	CHART       	APP VERSION	DESCRIPTION                                                                                                  
-1       	Tue Nov 17 16:14:15 2026	superseded	orders-1.0.0	3.9        	Install complete                                                                                             
-2       	Tue Nov 17 16:14:51 2026	superseded	orders-1.0.0	3.9        	Upgrade complete                                                                                             
-3       	Tue Nov 17 16:16:26 2026	superseded	orders-1.0.0	3.9        	Rollback to 1                                                                                                
-4       	Tue Nov 17 16:16:27 2026	failed    	orders-1.0.0	3.9        	Upgrade "orders" failed: resource Deployment/prod/orders not ready. status: InProgress, message: Updated: ...
-5       	Tue Nov 17 16:18:28 2026	deployed  	orders-1.0.0	3.9        	Rollback to 3                                                                                                
+1       	Tue Nov 17 18:18:34 2026	superseded	orders-1.0.0	3.9        	Install complete                                                                                             
+2       	Tue Nov 17 18:19:11 2026	superseded	orders-1.0.0	3.9        	Upgrade complete                                                                                             
+3       	Tue Nov 17 18:20:46 2026	superseded	orders-1.0.0	3.9        	Rollback to 1                                                                                                
+4       	Tue Nov 17 18:20:48 2026	failed    	orders-1.0.0	3.9        	Upgrade "orders" failed: resource Deployment/prod/orders not ready. status: InProgress, message: Updated: ...
+5       	Tue Nov 17 18:22:49 2026	deployed  	orders-1.0.0	3.9        	Rollback to 3                                                                                                
 

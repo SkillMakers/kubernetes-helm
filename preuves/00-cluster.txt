@@ -8,5 +8,5 @@ version.BuildInfo{Version:"v4.3.2", GitCommit:"8346aaa55e7161f7c547212d0a87f0136
 
 $ kubectl get nodes
 NAME                 STATUS   ROLES           AGE     VERSION
-demo-control-plane   Ready    control-plane   2m33s   v1.37.0
+demo-control-plane   Ready    control-plane   2m38s   v1.37.0
 

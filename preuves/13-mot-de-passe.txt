@@ -4,7 +4,7 @@ NAME                           TYPE                 DATA   AGE
 sh.helm.release.v1.orders.v1   helm.sh/release.v1   1      20m
 sh.helm.release.v1.orders.v2   helm.sh/release.v1   1      15m
 sh.helm.release.v1.orders.v3   helm.sh/release.v1   1      14m
-sh.helm.release.v1.orders.v4   helm.sh/release.v1   1      13m
+sh.helm.release.v1.orders.v4   helm.sh/release.v1   1      14m
 
 # Toutes les valeurs de la version 1, défauts du chart compris :
 $ helm get values orders -n dev --revision 1 --all | grep -A3 '^database'
@@ -33,8 +33,8 @@ $ … sh.helm.release.v1.orders.v1 … | grep -c Sup3r-Secret
 
 $ helm history orders -n dev
 REVISION	UPDATED                 	STATUS    	CHART       	APP VERSION	DESCRIPTION     
-1       	Tue Nov 17 16:14:13 2026	superseded	orders-1.0.0	3.9        	Install complete
-2       	Tue Nov 17 16:19:11 2026	superseded	orders-1.0.0	3.9        	Upgrade complete
-3       	Tue Nov 17 16:20:15 2026	superseded	orders-1.0.0	3.9        	Upgrade complete
-4       	Tue Nov 17 16:20:28 2026	deployed  	orders-1.0.0	3.9        	Upgrade complete
+1       	Tue Nov 17 18:18:33 2026	superseded	orders-1.0.0	3.9        	Install complete
+2       	Tue Nov 17 18:23:32 2026	superseded	orders-1.0.0	3.9        	Upgrade complete
+3       	Tue Nov 17 18:24:35 2026	superseded	orders-1.0.0	3.9        	Upgrade complete
+4       	Tue Nov 17 18:24:48 2026	deployed  	orders-1.0.0	3.9        	Upgrade complete
 

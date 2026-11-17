@@ -9,10 +9,10 @@ REVISION: 1
 
 $ kubectl get deployment,hpa -n prod -l app.kubernetes.io/name=orders
 NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/orders   6/6     6            6           75s
+deployment.apps/orders   6/6     6            6           73s
 
 NAME                                         REFERENCE           TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
-horizontalpodautoscaler.autoscaling/orders   Deployment/orders   cpu: 290%/60%   3         6         6          75s
+horizontalpodautoscaler.autoscaling/orders   Deployment/orders   cpu: 383%/60%   3         6         6          73s
 
 $ helm3 upgrade orders chart/orders-naif -n prod -f values-prod.yaml --set message=Promo
 STATUS: deployed

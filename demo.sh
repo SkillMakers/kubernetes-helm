@@ -224,8 +224,10 @@ fi
 if partie valeurs; then
   echo "== 4. Un seul --set, et la prod repart avec les valeurs de dev"
   cp chart/orders/values-prod.yaml .travail/values-prod-final.yaml
-  passage_hpa prod >/dev/null
-  h upgrade orders chart/orders -n prod -f .travail/values-prod-final.yaml --rollback-on-failure --timeout 5m >/dev/null
+  # La prod repart d'une installation du chart corrigé (le passage d'une release existante est la partie migration).
+  h uninstall orders -n prod --wait >/dev/null
+  h install orders chart/orders -n prod -f .travail/values-prod-final.yaml --wait >/dev/null
+  sleep 30
   {
     echo "# La prod, sur le chart corrigé, avec values-prod.yaml :"
     hrun get values orders -n prod

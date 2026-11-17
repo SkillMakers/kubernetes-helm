@@ -17,7 +17,7 @@ kube-controller-manager Update status
 $ helm upgrade orders chart/orders -n prod -f values-prod.yaml
 Release "orders" has been upgraded. Happy Helming!
 NAME: orders
-LAST DEPLOYED: Tue Nov 17 16:30:26 2026
+LAST DEPLOYED: Tue Nov 17 18:35:18 2026
 NAMESPACE: prod
 STATUS: deployed
 REVISION: 2
@@ -30,9 +30,9 @@ Tester depuis le cluster : curl http://orders.prod/info
 à 1 s : voulues=3 prêtes=3
 à 3 s : voulues=3 prêtes=3
 à 5 s : voulues=3 prêtes=3
-à 10 s : voulues=6 prêtes=3
-à 15 s : voulues=6 prêtes=3
-à 20 s : voulues=6 prêtes=3
+à 10 s : voulues=6 prêtes=4
+à 15 s : voulues=6 prêtes=4
+à 20 s : voulues=6 prêtes=4
 à 30 s : voulues=6 prêtes=5
 à 45 s : voulues=6 prêtes=6
 à 60 s : voulues=6 prêtes=6

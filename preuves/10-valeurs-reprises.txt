@@ -2,10 +2,10 @@
 $ helm upgrade orders chart/orders -n prod --wait
 Release "orders" has been upgraded. Happy Helming!
 NAME: orders
-LAST DEPLOYED: Tue Nov 17 16:21:31 2026
+LAST DEPLOYED: Tue Nov 17 18:26:50 2026
 NAMESPACE: prod
 STATUS: deployed
-REVISION: 10
+REVISION: 4
 DESCRIPTION: Upgrade complete
 TEST SUITE: None
 NOTES:
@@ -26,10 +26,10 @@ message: Bienvenue
 $ helm upgrade orders chart/orders -n prod -f values-prod.yaml --set message=Promo --wait
 Release "orders" has been upgraded. Happy Helming!
 NAME: orders
-LAST DEPLOYED: Tue Nov 17 16:21:33 2026
+LAST DEPLOYED: Tue Nov 17 18:26:52 2026
 NAMESPACE: prod
 STATUS: deployed
-REVISION: 11
+REVISION: 5
 DESCRIPTION: Upgrade complete
 TEST SUITE: None
 NOTES:
@@ -48,11 +48,11 @@ message: Promo
 
 $ kubectl get deployment,hpa -n prod -l app.kubernetes.io/name=orders
 NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/orders   3/3     3            3           7m57s
+deployment.apps/orders   3/3     3            3           2m25s
 
 NAME                                         REFERENCE           TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
-horizontalpodautoscaler.autoscaling/orders   Deployment/orders   cpu: 9%/60%   3         6         3          7m57s
+horizontalpodautoscaler.autoscaling/orders   Deployment/orders   cpu: 7%/60%   3         6         3          73s
 
 $ curl -s http://orders.prod/info
-{"message":"Promo","version":"3.10","pod":"orders-5bf6bfcf84-gp8jt"}
+{"pod":"orders-5bf6bfcf84-rtr45","message":"Promo","version":"3.10"}
 

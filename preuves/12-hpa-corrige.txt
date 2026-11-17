@@ -1,7 +1,7 @@
 # Le chart corrigé : pas de replicas quand l'autoscaling est activé.
 $ helm install orders chart/orders -n prod -f values-prod.yaml --wait
 NAME: orders
-LAST DEPLOYED: Tue Nov 17 16:25:08 2026
+LAST DEPLOYED: Tue Nov 17 18:30:10 2026
 NAMESPACE: prod
 STATUS: deployed
 REVISION: 1
@@ -11,19 +11,19 @@ NOTES:
 orders installée dans l'espace de noms prod, image orders:3.9.
 Tester depuis le cluster : curl http://orders.prod/info
 
-(6 copies voulues au bout de 42 s, toutes prêtes au bout de 66 s)
+(6 copies voulues au bout de 28 s, toutes prêtes au bout de 52 s)
 
 $ kubectl get deployment,hpa -n prod -l app.kubernetes.io/name=orders
 NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/orders   6/6     6            6           88s
+deployment.apps/orders   6/6     6            6           73s
 
 NAME                                         REFERENCE           TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
-horizontalpodautoscaler.autoscaling/orders   Deployment/orders   cpu: 354%/60%   3         6         6          88s
+horizontalpodautoscaler.autoscaling/orders   Deployment/orders   cpu: 370%/60%   3         6         6          73s
 
 $ helm upgrade orders chart/orders -n prod -f values-prod.yaml --set message=Promo
 Release "orders" has been upgraded. Happy Helming!
 NAME: orders
-LAST DEPLOYED: Tue Nov 17 16:26:37 2026
+LAST DEPLOYED: Tue Nov 17 18:31:25 2026
 NAMESPACE: prod
 STATUS: deployed
 REVISION: 2

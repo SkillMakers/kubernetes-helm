@@ -2,7 +2,7 @@
 $ helm upgrade orders chart/orders -n dev --set message=Bonjour --wait
 Release "orders" has been upgraded. Happy Helming!
 NAME: orders
-LAST DEPLOYED: Tue Nov 17 16:20:15 2026
+LAST DEPLOYED: Tue Nov 17 18:24:35 2026
 NAMESPACE: dev
 STATUS: deployed
 REVISION: 3
@@ -14,12 +14,12 @@ Tester depuis le cluster : curl http://orders.dev/info
 
 $ kubectl get pods -n dev -l app.kubernetes.io/name=orders
 NOM                        IMAGE        PRÊT  REDÉMARRAGES ATTENTE
-orders-6cc6c9fb69-r66l4    orders:3.9   true   0             
+orders-6cc6c9fb69-nj6z5    orders:3.9   true   0             
 
 $ helm upgrade orders chart/orders -n dev --set message=Salut --wait
 Release "orders" has been upgraded. Happy Helming!
 NAME: orders
-LAST DEPLOYED: Tue Nov 17 16:20:28 2026
+LAST DEPLOYED: Tue Nov 17 18:24:48 2026
 NAMESPACE: dev
 STATUS: deployed
 REVISION: 4
@@ -31,10 +31,10 @@ Tester depuis le cluster : curl http://orders.dev/info
 
 $ kubectl get pods -n dev -l app.kubernetes.io/name=orders
 NOM                        IMAGE        PRÊT  REDÉMARRAGES ATTENTE
-orders-cd7599c58-wd4rl     orders:3.9   true   0             
+orders-cd7599c58-rfvvw     orders:3.9   true   0             
 
 $ curl -s http://orders.dev/info
-{"pod":"orders-cd7599c58-wd4rl","message":"Salut","version":"3.9"}
+{"version":"3.9","message":"Salut","pod":"orders-cd7599c58-rfvvw"}
 
 $ kubectl get deployment orders -n dev -o jsonpath='{.spec.template.metadata.annotations}'
 {"checksum/config":"9249e34ba660e6f834198ad478e7777bc040724febfcc6c59f34a46dcf05270e"}
