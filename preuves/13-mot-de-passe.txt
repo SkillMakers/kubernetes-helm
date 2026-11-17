@@ -1,0 +1,40 @@
+# Le chart naïf a mis le mot de passe dans values.yaml. Helm garde chaque version dans le cluster :
+$ kubectl get secrets -n dev -l owner=helm
+NAME                           TYPE                 DATA   AGE
+sh.helm.release.v1.orders.v1   helm.sh/release.v1   1      20m
+sh.helm.release.v1.orders.v2   helm.sh/release.v1   1      15m
+sh.helm.release.v1.orders.v3   helm.sh/release.v1   1      14m
+sh.helm.release.v1.orders.v4   helm.sh/release.v1   1      13m
+
+# Toutes les valeurs de la version 1, défauts du chart compris :
+$ helm get values orders -n dev --revision 1 --all | grep -A3 '^database'
+database:
+  password: Sup3r-Secret
+  url: jdbc:postgresql://postgres:5432/orders
+  username: app
+
+# Sans Helm, avec les seuls droits de lecture sur les Secrets de l'espace de noms :
+$ kubectl get secret sh.helm.release.v1.orders.v1 -n dev -o jsonpath='{.data.release}' | base64 -d | base64 -d | gunzip | grep -o '"password":"[^"]*"' | sort -u
+"password":"Sup3r-Secret"
+
+# Après le passage au chart corrigé (existingSecret), la dernière version ne contient plus que le nom du Secret :
+$ helm get values orders -n dev --all | grep -A3 '^database'
+database:
+  existingSecret: postgres-db
+  url: jdbc:postgresql://postgres:5432/orders
+  username: app
+
+$ … sh.helm.release.v1.orders.v4 … | grep -c Sup3r-Secret
+0
+
+# Mais la version 1 est toujours là (10 versions gardées par défaut) :
+$ … sh.helm.release.v1.orders.v1 … | grep -c Sup3r-Secret
+1
+
+$ helm history orders -n dev
+REVISION	UPDATED                 	STATUS    	CHART       	APP VERSION	DESCRIPTION     
+1       	Tue Nov 17 16:14:13 2026	superseded	orders-1.0.0	3.9        	Install complete
+2       	Tue Nov 17 16:19:11 2026	superseded	orders-1.0.0	3.9        	Upgrade complete
+3       	Tue Nov 17 16:20:15 2026	superseded	orders-1.0.0	3.9        	Upgrade complete
+4       	Tue Nov 17 16:20:28 2026	deployed  	orders-1.0.0	3.9        	Upgrade complete
+

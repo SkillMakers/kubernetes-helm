@@ -1,0 +1,46 @@
+# values-prod.yaml : la nouvelle version, écrite sans guillemets
+$ grep tag values-prod.yaml
+  tag: 3.10
+
+$ helm lint chart/orders-naif -f values-prod.yaml
+==> Linting chart/orders-naif
+[INFO] Chart.yaml: icon is recommended
+
+1 chart(s) linted, 0 chart(s) failed
+
+$ helm template orders chart/orders-naif -f values-prod.yaml | grep image:
+          image: "orders:3.1"
+
+$ helm upgrade orders chart/orders-naif -n prod -f values-prod.yaml
+Release "orders" has been upgraded. Happy Helming!
+NAME: orders
+LAST DEPLOYED: Tue Nov 17 16:14:51 2026
+NAMESPACE: prod
+STATUS: deployed
+REVISION: 2
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+NOTES:
+orders installée dans l'espace de noms prod, image orders:3.1.
+Tester depuis le cluster : curl http://orders.prod/info
+
+# helm upgrade rendu en 1.5 s
+
+$ helm list -n prod
+NAME  	NAMESPACE	REVISION	UPDATED                              	STATUS  	CHART       	APP VERSION
+orders	prod     	2       	2026-11-17 16:14:51.7696799 +0100 CET	deployed	orders-1.0.0	3.9        
+
+# 90 secondes plus tard :
+$ kubectl get pods -n prod -l app.kubernetes.io/name=orders
+NOM                        IMAGE        PRÊT  REDÉMARRAGES ATTENTE
+orders-6dd59ddfdf-6mzhk    orders:3.9   true   0             
+orders-6dd59ddfdf-7nrcq    orders:3.9   true   0             
+orders-6dd59ddfdf-r2skt    orders:3.9   true   0             
+orders-6dbbd86d7c-vjhp9    orders:3.1   false  0             ImagePullBackOff
+
+$ kubectl get events -n prod --field-selector reason=Failed | grep -o 'Failed to pull image[^:]*:[^ ]*' | sort -u
+Failed to pull image "orders:3.1"
+
+$ curl -s http://orders.prod/info
+{"version":"3.9","message":"Bienvenue","pod":"orders-6dd59ddfdf-6mzhk"}
+

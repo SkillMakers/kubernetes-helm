@@ -1,0 +1,63 @@
+# Le chart naïf : replicas: 3 dans le Deployment, ET un autoscaler (3 à 6 copies).
+$ helm install orders chart/orders-naif -n prod -f values-prod.yaml --wait
+NAME: orders
+LAST DEPLOYED: Tue Nov 17 16:22:15 2026
+NAMESPACE: prod
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NOTES:
+orders installée dans l'espace de noms prod, image orders:3.9.
+Tester depuis le cluster : curl http://orders.prod/info
+
+# Du trafic de calcul : l'autoscaler ajoute des copies.
+(6 copies voulues au bout de 46 s, toutes prêtes au bout de 67 s)
+
+$ kubectl get deployment,hpa -n prod -l app.kubernetes.io/name=orders
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/orders   6/6     6            6           87s
+
+NAME                                         REFERENCE           TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/orders   Deployment/orders   cpu: 348%/60%   3         6         6          87s
+
+# Qui a écrit quoi dans le Deployment (managedFields) :
+$ kubectl get deployment orders -n prod -o jsonpath='{range .metadata.managedFields[*]}{.manager} {.operation} {.subresource}{"\n"}{end}'
+helm Apply 
+kube-controller-manager Update scale
+kube-controller-manager Update status
+
+# Une mise à jour qui ne touche qu'au message :
+$ helm upgrade orders chart/orders-naif -n prod -f values-prod.yaml --set message=Promo
+level=WARN msg="upgrade failed" name=orders error="conflict occurred while applying object prod/orders apps/v1, Kind=Deployment: Apply failed with 1 conflict: conflict with \"kube-controller-manager\" with subresource \"scale\" using apps/v1: .spec.replicas"
+Error: UPGRADE FAILED: conflict occurred while applying object prod/orders apps/v1, Kind=Deployment: Apply failed with 1 conflict: conflict with "kube-controller-manager" with subresource "scale" using apps/v1: .spec.replicas
+
+$ helm history orders -n prod
+REVISION	UPDATED                 	STATUS  	CHART       	APP VERSION	DESCRIPTION                                                                                                                                                                                                                        
+1       	Tue Nov 17 16:22:15 2026	deployed	orders-1.0.0	3.9        	Install complete                                                                                                                                                                                                                   
+2       	Tue Nov 17 16:23:44 2026	failed  	orders-1.0.0	3.9        	Upgrade "orders" failed: conflict occurred while applying object prod/orders apps/v1, Kind=Deployment: Apply failed with 1 conflict: conflict with "kube-controller-manager" with subresource "scale" using apps/v1: .spec.replicas
+
+# Le réflexe : forcer.
+$ helm upgrade orders chart/orders-naif -n prod -f values-prod.yaml --set message=Promo --force-conflicts
+Release "orders" has been upgraded. Happy Helming!
+NAME: orders
+LAST DEPLOYED: Tue Nov 17 16:23:46 2026
+NAMESPACE: prod
+STATUS: deployed
+REVISION: 3
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+NOTES:
+orders installée dans l'espace de noms prod, image orders:3.9.
+Tester depuis le cluster : curl http://orders.prod/info
+
+à 1 s : voulues=3 prêtes=3
+à 3 s : voulues=3 prêtes=3
+à 5 s : voulues=3 prêtes=3
+à 10 s : voulues=3 prêtes=3
+à 15 s : voulues=6 prêtes=3
+à 20 s : voulues=6 prêtes=3
+à 30 s : voulues=6 prêtes=5
+à 45 s : voulues=6 prêtes=6
+à 60 s : voulues=6 prêtes=6
+

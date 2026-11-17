@@ -1,0 +1,31 @@
+$ cat values.yaml
+tag: 3.10
+codePostal: 01000
+identifiant: 0042
+version: "3.10"
+
+$ cat templates/valeurs.yaml
+tag: {{ .Values.tag }}
+codePostal: {{ .Values.codePostal }}
+identifiant: {{ .Values.identifiant }}
+version: {{ .Values.version }}
+
+$ helm template essai .
+tag: 3.1
+codePostal: 512
+identifiant: 34
+version: 3.10
+
+# Le chart corrigé déclare image.tag comme texte (values.schema.json) :
+$ helm lint chart/orders -f values-prod.yaml
+==> Linting chart/orders
+[INFO] Chart.yaml: icon is recommended
+[ERROR] values.yaml: - at '/image/tag': got number, want string
+
+[ERROR] templates/: values don't meet the specifications of the schema(s) in the following chart(s):
+orders:
+- at '/image/tag': got number, want string
+
+
+Error: 1 chart(s) linted, 1 chart(s) failed
+

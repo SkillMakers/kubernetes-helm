@@ -1,0 +1,9 @@
+# Le chart de l'application de commandes : un dossier, versionné avec le code.
+apiVersion: v2
+name: orders
+description: L'application de commandes Spring Boot de la série Kubernetes pour développeurs Java
+type: application
+# Version du chart (à changer à chaque modification des modèles).
+version: 1.0.0
+# Version de l'application livrée par défaut : sert d'étiquette d'image si image.tag est vide.
+appVersion: "3.9"

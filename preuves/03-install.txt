@@ -1,0 +1,47 @@
+$ helm install orders chart/orders-naif -n dev
+NAME: orders
+LAST DEPLOYED: Tue Nov 17 16:14:13 2026
+NAMESPACE: dev
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NOTES:
+orders installée dans l'espace de noms dev, image orders:3.9.
+Tester depuis le cluster : curl http://orders.dev/info
+
+$ helm install orders chart/orders-naif -n prod -f values-prod.yaml --wait
+NAME: orders
+LAST DEPLOYED: Tue Nov 17 16:14:15 2026
+NAMESPACE: prod
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NOTES:
+orders installée dans l'espace de noms prod, image orders:3.9.
+Tester depuis le cluster : curl http://orders.prod/info
+
+# install prod avec --wait : 31.2 s au total
+
+$ helm list -A
+NAME  	NAMESPACE	REVISION	UPDATED                              	STATUS  	CHART       	APP VERSION
+orders	dev      	1       	2026-11-17 16:14:13.7542479 +0100 CET	deployed	orders-1.0.0	3.9        
+orders	prod     	1       	2026-11-17 16:14:15.0710779 +0100 CET	deployed	orders-1.0.0	3.9        
+
+$ kubectl get pods -n dev -l app.kubernetes.io/name=orders
+NOM                        IMAGE        PRÊT  REDÉMARRAGES ATTENTE
+orders-6dd59ddfdf-stsfp    orders:3.9   true   0             
+
+$ kubectl get pods -n prod -l app.kubernetes.io/name=orders
+NOM                        IMAGE        PRÊT  REDÉMARRAGES ATTENTE
+orders-6dd59ddfdf-6mzhk    orders:3.9   true   0             
+orders-6dd59ddfdf-7nrcq    orders:3.9   true   0             
+orders-6dd59ddfdf-r2skt    orders:3.9   true   0             
+
+$ curl -s http://orders.dev/info
+{"message":"Bonjour","version":"3.9","pod":"orders-6dd59ddfdf-stsfp"}
+
+$ curl -s http://orders.prod/info
+{"pod":"orders-6dd59ddfdf-7nrcq","message":"Bienvenue","version":"3.9"}
+

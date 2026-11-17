@@ -1,0 +1,15 @@
+# L'ancien nom de --rollback-on-failure, sous Helm 4 :
+$ helm upgrade orders chart/orders -n dev --atomic --wait
+Flag --atomic has been deprecated, use --rollback-on-failure instead
+Release "orders" has been upgraded. Happy Helming!
+NAME: orders
+LAST DEPLOYED: Tue Nov 17 16:34:20 2026
+NAMESPACE: dev
+STATUS: deployed
+REVISION: 5
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+NOTES:
+orders installée dans l'espace de noms dev, image orders:3.9.
+Tester depuis le cluster : curl http://orders.dev/info
+

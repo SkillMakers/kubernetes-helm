@@ -1,0 +1,10 @@
+# Production : seules les différences avec values.yaml.
+image:
+  tag: "3.10"
+
+message: Bienvenue
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 6

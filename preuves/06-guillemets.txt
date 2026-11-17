@@ -1,0 +1,28 @@
+# La même ligne, entre guillemets :
+$ grep tag values-prod.yaml
+  tag: "3.10"
+
+$ helm upgrade orders chart/orders-naif -n prod -f values-prod.yaml --rollback-on-failure --timeout 5m
+Release "orders" has been upgraded. Happy Helming!
+NAME: orders
+LAST DEPLOYED: Tue Nov 17 16:18:31 2026
+NAMESPACE: prod
+STATUS: deployed
+REVISION: 6
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+NOTES:
+orders installée dans l'espace de noms prod, image orders:3.10.
+Tester depuis le cluster : curl http://orders.prod/info
+
+# Mise à jour attendue jusqu'au bout : 38.1 s
+
+$ kubectl get pods -n prod -l app.kubernetes.io/name=orders
+NOM                        IMAGE        PRÊT  REDÉMARRAGES ATTENTE
+orders-5d7ddd755-nnhvd     orders:3.10  true   0             
+orders-5d7ddd755-vwtp2     orders:3.10  true   0             
+orders-5d7ddd755-gwklf     orders:3.10  true   0             
+
+$ curl -s http://orders.prod/info
+{"pod":"orders-5d7ddd755-nnhvd","message":"Bienvenue","version":"3.10"}
+

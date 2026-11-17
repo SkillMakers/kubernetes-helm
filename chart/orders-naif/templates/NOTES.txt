@@ -1,0 +1,2 @@
+{{ .Release.Name }} installée dans l'espace de noms {{ .Release.Namespace }}, image {{ .Values.image.repository }}:{{ include "orders.tag" . }}.
+Tester depuis le cluster : curl http://{{ .Release.Name }}.{{ .Release.Namespace }}/info

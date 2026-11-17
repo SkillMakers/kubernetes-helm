@@ -1,0 +1,32 @@
+# Valeurs par défaut : celles d'un environnement de développement.
+# Chaque environnement les surcharge avec son propre fichier (values-prod.yaml) : helm install -f values-prod.yaml.
+
+image:
+  repository: orders
+  # Vide : on prend appVersion de Chart.yaml.
+  tag: ""
+
+# Nombre de copies.
+replicaCount: 1
+
+message: Bonjour
+
+database:
+  url: jdbc:postgresql://postgres:5432/orders
+  username: app
+  password: Sup3r-Secret
+
+jvmOptions: -XX:MaxRAMPercentage=50 -XX:+ExitOnOutOfMemoryError
+
+resources:
+  requests:
+    memory: 384Mi
+    cpu: 250m
+  limits:
+    memory: 512Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 60

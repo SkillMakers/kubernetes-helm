@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "orders.labels" . | nindent 4 }}
+spec:
+  {{- /* Avec l'autoscaling, pas de replicas : sinon chaque mise à jour remet le nombre du fichier. */}}
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "orders.selector" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "orders.selector" . | nindent 8 }}
+      annotations:
+        {{- /* Empreinte des données du ConfigMap : si elles changent, le modèle de pod change, et les pods sont
+               remplacés. Sans elle, un ConfigMap modifié n'est lu par personne avant le prochain redémarrage.
+               Seulement .data : les étiquettes (version du chart) ne doivent pas redémarrer les pods. */}}
+        checksum/config: {{ (include (print $.Template.BasePath "/configmap.yaml") . | fromYaml).data | toYaml | sha256sum }}
+    spec:
+      terminationGracePeriodSeconds: 40
+      containers:
+        - name: orders
+          image: "{{ .Values.image.repository }}:{{ include "orders.tag" . }}"
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-config
+          env:
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "database.existingSecret : le nom du Secret qui contient le mot de passe de la base" .Values.database.existingSecret }}
+                  key: password
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ .Values.jvmOptions | quote }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            periodSeconds: 2
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            periodSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            periodSeconds: 2
+          lifecycle:
+            preStop:
+              sleep:
+                seconds: 5

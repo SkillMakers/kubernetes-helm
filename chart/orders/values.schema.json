@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "Valeurs du chart orders",
+  "description": "Vérifié par helm lint, install, upgrade et template : une valeur du mauvais type arrête Helm avant le cluster.",
+  "type": "object",
+  "properties": {
+    "image": {
+      "type": "object",
+      "properties": {
+        "repository": { "type": "string", "minLength": 1 },
+        "tag": {
+          "type": "string",
+          "description": "Toujours entre guillemets dans le YAML : 3.10 sans guillemets est le nombre 3.1."
+        }
+      }
+    },
+    "replicaCount": { "type": "integer", "minimum": 1 },
+    "message": { "type": "string" },
+    "database": {
+      "type": "object",
+      "required": ["existingSecret"],
+      "properties": {
+        "url": { "type": "string" },
+        "username": { "type": "string" },
+        "existingSecret": { "type": "string", "minLength": 1 }
+      }
+    },
+    "autoscaling": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "minReplicas": { "type": "integer", "minimum": 1 },
+        "maxReplicas": { "type": "integer", "minimum": 1 },
+        "targetCPUUtilizationPercentage": { "type": "integer", "minimum": 1, "maximum": 100 }
+      }
+    }
+  }
+}

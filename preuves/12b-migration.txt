@@ -1,0 +1,41 @@
+# La prod tourne sur le premier chart (replicas: 3, autoscaler 3 à 6), sans charge.
+$ helm install orders chart/orders-naif -n prod -f values-prod.yaml --wait
+NAME: orders
+LAST DEPLOYED: Tue Nov 17 16:27:49 2026
+NAMESPACE: prod
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NOTES:
+orders installée dans l'espace de noms prod, image orders:3.9.
+Tester depuis le cluster : curl http://orders.prod/info
+
+$ kubectl get deployment orders -n prod -o jsonpath='{range .metadata.managedFields[*]}{.manager} {.operation} {.subresource}{"\n"}{end}'
+helm Apply 
+kube-controller-manager Update status
+
+# On passe au chart corrigé, qui ne contient plus replicas :
+$ helm upgrade orders chart/orders -n prod -f values-prod.yaml
+Release "orders" has been upgraded. Happy Helming!
+NAME: orders
+LAST DEPLOYED: Tue Nov 17 16:28:32 2026
+NAMESPACE: prod
+STATUS: deployed
+REVISION: 2
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+NOTES:
+orders installée dans l'espace de noms prod, image orders:3.9.
+Tester depuis le cluster : curl http://orders.prod/info
+
+à 1 s : voulues=1 prêtes=1
+à 3 s : voulues=1 prêtes=1
+à 5 s : voulues=3 prêtes=1
+à 10 s : voulues=3 prêtes=2
+à 15 s : voulues=3 prêtes=2
+à 20 s : voulues=6 prêtes=3
+à 30 s : voulues=6 prêtes=3
+à 45 s : voulues=6 prêtes=6
+à 60 s : voulues=6 prêtes=6
+

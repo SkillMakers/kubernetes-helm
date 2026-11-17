@@ -1,0 +1,30 @@
+$ helm3 version
+version.BuildInfo{Version:"v3.18.5", GitCommit:"b78692c18f0fb38fe5ba4571a674de067a4c53a5", GitTreeState:"clean", GoVersion:"go1.24.5"}
+
+$ helm3 install orders chart/orders-naif -n prod -f values-prod.yaml --wait
+STATUS: deployed
+REVISION: 1
+
+(6 copies voulues au bout de 28 s, toutes prêtes au bout de 53 s)
+
+$ kubectl get deployment,hpa -n prod -l app.kubernetes.io/name=orders
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/orders   6/6     6            6           75s
+
+NAME                                         REFERENCE           TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/orders   Deployment/orders   cpu: 290%/60%   3         6         6          75s
+
+$ helm3 upgrade orders chart/orders-naif -n prod -f values-prod.yaml --set message=Promo
+STATUS: deployed
+REVISION: 2
+
+à 1 s : voulues=3 prêtes=3
+à 3 s : voulues=3 prêtes=3
+à 5 s : voulues=3 prêtes=3
+à 10 s : voulues=3 prêtes=3
+à 15 s : voulues=6 prêtes=3
+à 20 s : voulues=6 prêtes=3
+à 30 s : voulues=6 prêtes=3
+à 45 s : voulues=6 prêtes=6
+à 60 s : voulues=6 prêtes=6
+

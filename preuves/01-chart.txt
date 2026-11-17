@@ -1,0 +1,30 @@
+# Ce que génère helm create :
+$ helm create mon-appli
+mon-appli/.helmignore
+mon-appli/Chart.yaml
+mon-appli/templates/NOTES.txt
+mon-appli/templates/_helpers.tpl
+mon-appli/templates/deployment.yaml
+mon-appli/templates/hpa.yaml
+mon-appli/templates/httproute.yaml
+mon-appli/templates/ingress.yaml
+mon-appli/templates/service.yaml
+mon-appli/templates/serviceaccount.yaml
+mon-appli/templates/tests/test-connection.yaml
+mon-appli/values.yaml
+
+12 fichiers, 539 lignes
+
+# Notre chart :
+orders/Chart.yaml
+orders/templates/NOTES.txt
+orders/templates/_helpers.tpl
+orders/templates/configmap.yaml
+orders/templates/deployment.yaml
+orders/templates/hpa.yaml
+orders/templates/service.yaml
+orders/values-prod.yaml
+orders/values.schema.json
+orders/values.yaml
+
+10 fichiers, 220 lignes

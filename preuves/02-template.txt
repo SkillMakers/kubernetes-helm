@@ -1,0 +1,17 @@
+$ helm lint chart/orders-naif -f values-prod.yaml
+==> Linting chart/orders-naif
+[INFO] Chart.yaml: icon is recommended
+
+1 chart(s) linted, 0 chart(s) failed
+
+# Le YAML que Helm enverrait au cluster, sans rien installer (extrait) :
+$ helm template orders chart/orders-naif -f values-prod.yaml | grep -E 'kind:|replicas:|image:'
+kind: Secret
+kind: ConfigMap
+kind: Service
+kind: Deployment
+  replicas: 3
+          image: "orders:3.9"
+kind: HorizontalPodAutoscaler
+    kind: Deployment
+
